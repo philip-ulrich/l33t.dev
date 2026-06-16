@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>l33t.dev | Live game worlds and behind-the-scenes builds</title>
+    <meta
+      name="description"
+      content="Phil keeps a live game world running while maintaining community systems, fixing bugs, and shipping stream-side tools."
+    />
+    <meta property="og:title" content="l33t.dev | Live game worlds and behind-the-scenes builds" />
+    <meta
+      property="og:description"
+      content="A live game world, community systems, bug fixes, and stream-side tools."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/l33t-systems-console.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="l33t.dev" />
+    <meta
+      name="twitter:description"
+      content="A live game world, community systems, bug fixes, and stream-side tools."
+    />
+    <meta name="theme-color" content="#050812" />
+    <link rel="preload" href="assets/l33t-systems-console.png" as="image" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header" aria-label="Site header">
+        <a class="brand-mark" href="/" aria-label="l33t.dev home">
+          <span class="brand-glyph" aria-hidden="true">l33t</span>
+          <span class="brand-copy">
+            <strong>l33t.dev</strong>
+            <small>Phil</small>
+          </span>
+        </a>
+        <nav class="top-nav" aria-label="Primary navigation">
+          <a href="#links">Links</a>
+          <a href="#what">What happens here</a>
+          <a href="#now">Now</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span data-stream-dot aria-hidden="true"></span>
+              <span data-stream-status>Loading stream schedule</span>
+            </p>
+            <h1 id="hero-title">A live game world with the hood open.</h1>
+            <p class="hero-subtitle">
+              Phil keeps the stream world running while maintaining community systems, fixing bugs,
+              building small tools, and using AI where it actually earns its keep.
+            </p>
+            <div class="hero-actions" aria-label="Primary actions">
+              <a class="button button-primary" data-primary-social href="#links">Watch live</a>
+              <a class="button button-secondary" data-youtube-social href="#links">YouTube</a>
+            </div>
+          </div>
+
+          <aside class="hero-panel" aria-label="Live systems preview">
+            <img
+              src="assets/l33t-systems-console.png"
+              width="1680"
+              height="960"
+              alt="Dark neon systems dashboard with code, metrics, automation queues, and persistent-world panels."
+            />
+            <div class="terminal-card" aria-label="Stream loop">
+              <div class="terminal-top">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <ol>
+                <li><span>&gt;</span> go live</li>
+                <li><span>&gt;</span> run the build</li>
+                <li><span>&gt;</span> play the next round</li>
+              </ol>
+            </div>
+          </aside>
+        </section>
+
+        <section class="links-section section-band" id="links" aria-labelledby="links-title">
+          <div class="section-heading">
+            <p class="eyebrow">Watch live</p>
+            <h2 id="links-title">Twitch and YouTube.</h2>
+            <p>
+              Streams will start on Twitch with YouTube ready for clips, VODs, and simulcast
+              coverage as the channel ramps up.
+            </p>
+          </div>
+          <div class="social-grid" id="social-links" aria-live="polite"></div>
+        </section>
+
+        <section class="section-band" id="what" aria-labelledby="what-title">
+          <div class="section-heading">
+            <p class="eyebrow">What happens here?</p>
+            <h2 id="what-title">The game stays running. The work happens live.</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">01</div>
+              <h3>Community Systems</h3>
+              <p>Keeping the behind-the-scenes tools, dashboards, servers, and workflows healthy.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">02</div>
+              <h3>Features & Fixes</h3>
+              <p>Shipping small improvements, tracking down bugs, and solving the problems that show up on stream.</p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">03</div>
+              <h3>Useful AI</h3>
+              <p>Showing practical AI workflows for planning, debugging, refactoring, and getting unstuck.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="now-panel" id="now" aria-labelledby="now-title">
+          <div>
+            <p class="eyebrow">Now / Next</p>
+            <h2 id="now-title">Current operating mode</h2>
+          </div>
+          <dl class="status-list">
+            <div>
+              <dt>Current focus</dt>
+              <dd>Twitch + YouTube launch</dd>
+            </div>
+            <div>
+              <dt>Stream format</dt>
+              <dd>Play -&gt; Build -&gt; Tune</dd>
+            </div>
+            <div>
+              <dt>Schedule</dt>
+              <dd data-stream-schedule>Tuesdays + Fridays, 7 PM EST</dd>
+            </div>
+          </dl>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p><strong>l33t.dev</strong> <span>Phil</span></p>
+        <nav id="footer-links" aria-label="Footer social links"></nav>
+      </footer>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
