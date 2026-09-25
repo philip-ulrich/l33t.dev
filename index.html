@@ -3,149 +3,123 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>l33t.dev | Live game worlds and behind-the-scenes builds</title>
-    <meta
-      name="description"
-      content="Phil keeps a live game world running while maintaining community systems, fixing bugs, and shipping stream-side tools."
-    />
-    <meta property="og:title" content="l33t.dev | Live game worlds and behind-the-scenes builds" />
-    <meta
-      property="og:description"
-      content="A live game world, community systems, bug fixes, and stream-side tools."
-    />
+    <title>l33t.dev | Game on. Hood open.</title>
+    <meta name="description" content="Games running. Real systems getting built. Join Phil for community projects, bug fixes, and practical AI, Fridays at 7 PM Eastern on Twitch and YouTube." />
+    <meta property="og:title" content="l33t.dev | Game on. Hood open." />
+    <meta property="og:description" content="A live game world with the hood open. Games, community systems, and practical AI with Phil. Fridays at 7 PM Eastern." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="assets/l33t-systems-console.png" />
+    <meta property="og:url" content="https://l33t.dev/" />
+    <meta property="og:image" content="https://l33t.dev/assets/l33t-systems-console.png" />
+    <meta property="og:image:alt" content="An illustrated gaming and development desk with a wall of system displays." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="l33t.dev" />
-    <meta
-      name="twitter:description"
-      content="A live game world, community systems, bug fixes, and stream-side tools."
-    />
-    <meta name="theme-color" content="#050812" />
-    <link rel="preload" href="assets/l33t-systems-console.png" as="image" />
+    <meta name="twitter:title" content="l33t.dev | Game on. Hood open." />
+    <meta name="twitter:description" content="Games, community systems, and practical AI with Phil. Fridays at 7 PM Eastern." />
+    <meta name="twitter:image" content="https://l33t.dev/assets/l33t-systems-console.png" />
+    <meta name="theme-color" content="#101210" />
+    <link rel="canonical" href="https://l33t.dev/" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" as="image" href="assets/control-room.webp" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
   </head>
   <body>
-    <div class="site-shell">
-      <header class="site-header" aria-label="Site header">
-        <a class="brand-mark" href="/" aria-label="l33t.dev home">
-          <span class="brand-glyph" aria-hidden="true">l33t</span>
-          <span class="brand-copy">
-            <strong>l33t.dev</strong>
-            <small>Phil</small>
-          </span>
-        </a>
-        <nav class="top-nav" aria-label="Primary navigation">
-          <a href="#links">Links</a>
-          <a href="#what">What happens here</a>
-          <a href="#now">Now</a>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10" /></symbol>
+        <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-7-7 7 7 7-7" /></symbol>
+        <symbol id="calendar-plus" viewBox="0 0 24 24"><path d="M8 2v4m8-4v4M3 10h18M16 16h6m-3-3v6" /><path d="M12 22H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" /></symbol>
+        <symbol id="server" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="7" rx="2" /><rect x="2" y="14" width="20" height="7" rx="2" /><path d="M6 6.5h.01M6 17.5h.01M17 6.5h1M17 17.5h1" /></symbol>
+        <symbol id="braces" viewBox="0 0 24 24"><path d="M8 3H6a2 2 0 0 0-2 2v5l-2 2 2 2v5a2 2 0 0 0 2 2h2m8-18h2a2 2 0 0 1 2 2v5l2 2-2 2v5a2 2 0 0 1-2 2h-2" /></symbol>
+        <symbol id="cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 1v3m6-3v3M9 20v3m6-3v3M20 9h3m-3 6h3M1 9h3m-3 6h3" /><rect x="9" y="9" width="6" height="6" /></symbol>
+        <symbol id="twitch" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0 1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0Zm14.571 11.143L17.143 14.571h-3.429l-3 3v-3H6.857V1.714h13.714Z" /></symbol>
+        <symbol id="youtube" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" fill-rule="evenodd" d="M6 4h12a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Zm4 4v8l6-4Z" /></symbol>
+      </defs>
+    </svg>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="wordmark" href="./" aria-label="l33t.dev home">l33t<span>.dev</span><i aria-hidden="true"></i></a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#stream">The stream</a>
+          <a href="#schedule">Schedule</a>
         </nav>
-      </header>
+        <a class="header-schedule" href="#schedule"><span class="small-cross" aria-hidden="true">+</span><span data-weekly-schedule>Fridays / 7 PM ET</span></a>
+      </div>
+    </header>
 
-      <main>
-        <section class="hero" aria-labelledby="hero-title">
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-art" src="assets/control-room.webp" width="1672" height="941" alt="" fetchpriority="high" />
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="container hero-main">
           <div class="hero-copy">
-            <p class="eyebrow">
-              <span data-stream-dot aria-hidden="true"></span>
-              <span data-stream-status>Loading stream schedule</span>
-            </p>
-            <h1 id="hero-title">A live game world with the hood open.</h1>
-            <p class="hero-subtitle">
-              Phil keeps the stream world running while maintaining community systems, fixing bugs,
-              building small tools, and using AI where it actually earns its keep.
-            </p>
-            <div class="hero-actions" aria-label="Primary actions">
-              <a class="button button-primary" data-primary-social href="#links">Watch live</a>
-              <a class="button button-secondary" data-youtube-social href="#links">YouTube</a>
+            <p class="eyebrow hero-eyebrow"><span class="crosshair" aria-hidden="true">+</span> Games &amp; development with Phil</p>
+            <h1 id="hero-title">Game on.<br /><span>Hood open.</span></h1>
+            <p class="hero-description">The game's running. So are the servers.</p>
+            <p class="hero-intro">Hang out while I build features, fix bugs, and put AI to work on a real community's systems.</p>
+            <div class="hero-actions">
+              <a class="button button-twitch" data-platform="twitch" href="https://twitch.tv/l33tdev" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#twitch" /></svg><span>Watch on Twitch</span><svg class="icon button-arrow" aria-hidden="true"><use href="#arrow-up-right" /></svg></a>
+              <a class="button button-youtube" data-platform="youtube" href="https://youtube.com/@l33tdev" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#youtube" /></svg><span>YouTube</span><svg class="icon button-arrow" aria-hidden="true"><use href="#arrow-up-right" /></svg></a>
             </div>
           </div>
-
-          <aside class="hero-panel" aria-label="Live systems preview">
-            <img
-              src="assets/l33t-systems-console.png"
-              width="1680"
-              height="960"
-              alt="Dark neon systems dashboard with code, metrics, automation queues, and persistent-world panels."
-            />
-            <div class="terminal-card" aria-label="Stream loop">
-              <div class="terminal-top">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <ol>
-                <li><span>&gt;</span> go live</li>
-                <li><span>&gt;</span> run the build</li>
-                <li><span>&gt;</span> play the next round</li>
-              </ol>
-            </div>
-          </aside>
-        </section>
-
-        <section class="links-section section-band" id="links" aria-labelledby="links-title">
-          <div class="section-heading">
-            <p class="eyebrow">Watch live</p>
-            <h2 id="links-title">Twitch and YouTube.</h2>
-            <p>
-              Streams will start on Twitch with YouTube ready for clips, VODs, and simulcast
-              coverage as the channel ramps up.
-            </p>
+          <div class="scene-caption" aria-hidden="true"><span class="scene-cross">+</span><span>A live game world.<br />With the hood open.</span><span class="scene-cross">+</span></div>
+        </div>
+        <div class="hero-footer">
+          <div class="container hero-footer-inner">
+            <p class="stream-status" role="status" aria-live="polite" aria-atomic="true"><span class="status-dot" data-stream-dot aria-hidden="true"></span><span data-stream-status>Fridays at 7 PM ET</span></p>
+            <a class="text-link explore-link" href="#stream">Behind the stream<svg class="icon" aria-hidden="true"><use href="#arrow-down" /></svg></a>
           </div>
-          <div class="social-grid" id="social-links" aria-live="polite"></div>
-        </section>
+        </div>
+      </section>
 
-        <section class="section-band" id="what" aria-labelledby="what-title">
-          <div class="section-heading">
-            <p class="eyebrow">What happens here?</p>
-            <h2 id="what-title">The game stays running. The work happens live.</h2>
+      <section class="stream-section container" id="stream" aria-labelledby="stream-title">
+        <div class="section-intro">
+          <div><p class="eyebrow section-kicker"><span>01</span> Behind the stream</p><h2 id="stream-title">The game stays running.<br /><span>The work happens live.</span></h2></div>
+          <p class="section-description">A look at what keeps a community running. Real projects, a running game, and the occasional bug that takes the whole evening.</p>
+        </div>
+        <div class="topics">
+          <article class="topic">
+            <div class="topic-top"><svg class="icon topic-icon" aria-hidden="true"><use href="#server" /></svg><span class="topic-index" aria-hidden="true">/ 01</span></div>
+            <h3>Keep it running.</h3>
+            <p>The servers, dashboards, and tools a community relies on. Including the maintenance nobody sees.</p>
+            <span class="topic-label">Community systems</span>
+          </article>
+          <article class="topic">
+            <div class="topic-top"><svg class="icon topic-icon" aria-hidden="true"><use href="#braces" /></svg><span class="topic-index" aria-hidden="true">/ 02</span></div>
+            <h3>Make it better.</h3>
+            <p>New features, stubborn bugs, and small improvements. You get to see how they actually get made.</p>
+            <span class="topic-label">Features &amp; fixes</span>
+          </article>
+          <article class="topic">
+            <div class="topic-top"><svg class="icon topic-icon" aria-hidden="true"><use href="#cpu" /></svg><span class="topic-index" aria-hidden="true">/ 03</span></div>
+            <h3>Put AI to work.</h3>
+            <p>Planning, coding, debugging. Where AI saves time, where it misses, and how I work through both.</p>
+            <span class="topic-label">Practical AI</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="schedule-section" id="schedule" aria-labelledby="schedule-title">
+        <div class="container schedule-inner">
+          <div class="schedule-copy"><p class="eyebrow"><span>02</span> Make a night of it</p><h2 id="schedule-title">See you<br /> Friday.</h2><p>Bring a drink. Bring a question.<br /> See what we get working.</p></div>
+          <div class="schedule-details">
+            <p class="schedule-frequency" data-schedule-frequency>Every Friday</p>
+            <p class="schedule-time"><span data-schedule-time>7:00</span><span class="time-suffix"><span data-schedule-period>PM</span><abbr title="Eastern Time">ET</abbr></span></p>
+            <div class="session-details"><p data-next-session>Fridays at 7 PM Eastern</p><p class="local-time" data-local-time>On Twitch and YouTube</p></div>
+            <a class="button button-calendar" data-calendar href="assets/friday-stream.ics" download="l33t-fridays.ics"><svg class="icon" aria-hidden="true"><use href="#calendar-plus" /></svg>Add to calendar<svg class="icon button-arrow" aria-hidden="true"><use href="#arrow-up-right" /></svg></a>
           </div>
-          <div class="feature-grid">
-            <article class="feature-card">
-              <div class="feature-icon" aria-hidden="true">01</div>
-              <h3>Community Systems</h3>
-              <p>Keeping the behind-the-scenes tools, dashboards, servers, and workflows healthy.</p>
-            </article>
-            <article class="feature-card">
-              <div class="feature-icon" aria-hidden="true">02</div>
-              <h3>Features & Fixes</h3>
-              <p>Shipping small improvements, tracking down bugs, and solving the problems that show up on stream.</p>
-            </article>
-            <article class="feature-card">
-              <div class="feature-icon" aria-hidden="true">03</div>
-              <h3>Useful AI</h3>
-              <p>Showing practical AI workflows for planning, debugging, refactoring, and getting unstuck.</p>
-            </article>
-          </div>
-        </section>
+        </div>
+      </section>
+    </main>
 
-        <section class="now-panel" id="now" aria-labelledby="now-title">
-          <div>
-            <p class="eyebrow">Now / Next</p>
-            <h2 id="now-title">Current operating mode</h2>
-          </div>
-          <dl class="status-list">
-            <div>
-              <dt>Current focus</dt>
-              <dd>Twitch + YouTube launch</dd>
-            </div>
-            <div>
-              <dt>Stream format</dt>
-              <dd>Play -&gt; Build -&gt; Tune</dd>
-            </div>
-            <div>
-              <dt>Schedule</dt>
-              <dd data-stream-schedule>Tuesdays + Fridays, 7 PM EST</dd>
-            </div>
-          </dl>
-        </section>
-      </main>
-
-      <footer class="site-footer">
-        <p><strong>l33t.dev</strong> <span>Phil</span></p>
-        <nav id="footer-links" aria-label="Footer social links"></nav>
-      </footer>
-    </div>
-
-    <script src="app.js" defer></script>
+    <footer class="site-footer container">
+      <a class="wordmark footer-wordmark" href="./" aria-label="l33t.dev home">l33t<span>.dev</span><i aria-hidden="true"></i></a>
+      <p>Games. Code. See you Friday.</p>
+      <nav aria-label="Stream channels"><a class="text-link" data-platform="twitch" href="https://twitch.tv/l33tdev" target="_blank" rel="noopener noreferrer">Twitch<svg class="icon" aria-hidden="true"><use href="#arrow-up-right" /></svg></a><a class="text-link" data-platform="youtube" href="https://youtube.com/@l33tdev" target="_blank" rel="noopener noreferrer">YouTube<svg class="icon" aria-hidden="true"><use href="#arrow-up-right" /></svg></a></nav>
+    </footer>
   </body>
 </html>

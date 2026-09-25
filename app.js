@@ -1,166 +1,134 @@
+"use strict";
+
 const socialLinks = [
-  {
-    name: "Twitch",
-    label: "Primary stream",
-    url: "https://twitch.tv/l33tdev",
-    primary: true,
-    enabled: true,
-  },
-  {
-    name: "YouTube",
-    label: "Simulcast & VODs",
-    url: "https://youtube.com/@l33tdev",
-    enabled: true,
-  },
+  { id: "twitch", name: "Twitch", url: "https://twitch.tv/l33tdev" },
+  { id: "youtube", name: "YouTube", url: "https://youtube.com/@l33tdev" },
 ];
 
 const streamSchedule = {
-  timezone: "America/New_York",
-  timezoneLabel: "EST",
+  day: "Friday",
+  weekday: 5,
   hour: 19,
   minute: 0,
-  days: [
-    { index: 2, name: "Tuesday" },
-    { index: 5, name: "Friday" },
-  ],
+  timeZone: "America/New_York",
+  timeZoneLabel: "ET",
 };
 
-const platformMeta = {
-  Twitch: { accent: "#a970ff", short: "tw" },
-  YouTube: { accent: "#ff4d67", short: "yt" },
-};
+const easternFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: streamSchedule.timeZone,
+  year: "numeric", month: "2-digit", day: "2-digit",
+  hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+});
 
-function createSocialCard(link) {
-  const meta = platformMeta[link.name] ?? { accent: "#7df9ff", short: link.name.slice(0, 2) };
-  const element = document.createElement(link.enabled ? "a" : "article");
-
-  element.className = `social-card${link.primary ? " social-card-primary" : ""}${
-    link.enabled ? "" : " is-disabled"
-  }`;
-  element.style.setProperty("--card-accent", meta.accent);
-
-  if (link.enabled) {
-    element.href = link.url;
-    element.target = "_blank";
-    element.rel = "noreferrer";
-    element.setAttribute("aria-label", `${link.name}: ${link.label}`);
-  } else {
-    element.setAttribute("aria-label", `${link.name}: coming soon`);
-  }
-
-  element.innerHTML = `
-    <span class="social-orb" aria-hidden="true">${meta.short}</span>
-    <span class="social-body">
-      <strong>${link.name}</strong>
-      <span>${link.label}</span>
-    </span>
-    <span class="social-state">${link.enabled ? "Open" : "Soon"}</span>
-  `;
-
-  return element;
+function easternParts(date) {
+  return Object.fromEntries(easternFormatter.formatToParts(date)
+    .filter((part) => part.type !== "literal")
+    .map((part) => [part.type, Number(part.value)]));
 }
 
-function renderSocialLinks() {
-  const socialGrid = document.querySelector("#social-links");
-  const footerLinks = document.querySelector("#footer-links");
-  const primaryLink = socialLinks.find((link) => link.primary && link.enabled);
-  const youtubeLink = socialLinks.find((link) => link.name === "YouTube" && link.enabled);
-  const primaryAction = document.querySelector("[data-primary-social]");
-  const youtubeAction = document.querySelector("[data-youtube-social]");
+function timeLabel(includeMinutes = false) {
+  const { hour, minute } = streamSchedule;
+  const minutes = includeMinutes || minute ? `:${String(minute).padStart(2, "0")}` : "";
+  return `${hour % 12 || 12}${minutes} ${hour >= 12 ? "PM" : "AM"}`;
+}
 
-  if (primaryLink && primaryAction) {
-    primaryAction.href = primaryLink.url;
-    primaryAction.target = "_blank";
-    primaryAction.rel = "noreferrer";
+function easternToDate(year, month, day) {
+  const { hour, minute } = streamSchedule;
+  const wallTime = Date.UTC(year, month - 1, day, hour, minute);
+  let timestamp = wallTime;
+  // Resolve the offset on the event date, including a DST change before Friday.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const local = easternParts(new Date(timestamp));
+    const represented = Date.UTC(local.year, local.month - 1, local.day, local.hour, local.minute);
+    const adjustment = wallTime - represented;
+    timestamp += adjustment;
+    if (!adjustment) break;
   }
+  return new Date(timestamp);
+}
 
-  if (youtubeLink && youtubeAction) {
-    youtubeAction.href = youtubeLink.url;
-    youtubeAction.target = "_blank";
-    youtubeAction.rel = "noreferrer";
+function getStreamStatus(now = new Date()) {
+  const local = easternParts(now);
+  const calendarDate = new Date(Date.UTC(local.year, local.month - 1, local.day));
+  const dayOffset = (streamSchedule.weekday - calendarDate.getUTCDay() + 7) % 7;
+  const beforeStart = local.hour * 60 + local.minute < streamSchedule.hour * 60 + streamSchedule.minute;
+  const daysUntilStart = dayOffset || (beforeStart ? 0 : 7);
+  calendarDate.setUTCDate(calendarDate.getUTCDate() + daysUntilStart);
+  const nextStart = easternToDate(calendarDate.getUTCFullYear(), calendarDate.getUTCMonth() + 1, calendarDate.getUTCDate());
+  const time = `${timeLabel()} ${streamSchedule.timeZoneLabel}`;
+
+  let label = `Next stream ${streamSchedule.day} at ${time}`;
+  let state = "upcoming";
+  if (dayOffset === 1) label = `Tomorrow at ${time}`;
+  if (dayOffset === 0) {
+    label = beforeStart ? `Tonight at ${time}` : `Tonight's session / scheduled for ${time}`;
+    state = beforeStart ? "tonight" : "scheduled";
   }
+  return { label, state, nextStart };
+}
 
-  socialLinks.forEach((link) => socialGrid.append(createSocialCard(link)));
+function calendarEvent(now = new Date()) {
+  const next = easternParts(getStreamStatus(now).nextStart);
+  const pad = (value) => String(value).padStart(2, "0");
+  const start = `${next.year}${pad(next.month)}${pad(next.day)}T${pad(next.hour)}${pad(next.minute)}00`;
+  const stamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const dayCodes = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//l33t.dev//Friday stream//EN",
+    "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VTIMEZONE",
+    `TZID:${streamSchedule.timeZone}`, "BEGIN:DAYLIGHT", "DTSTART:20070311T020000",
+    "TZOFFSETFROM:-0500", "TZOFFSETTO:-0400", "TZNAME:EDT",
+    "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU", "END:DAYLIGHT",
+    "BEGIN:STANDARD", "DTSTART:20071104T020000", "TZOFFSETFROM:-0400",
+    "TZOFFSETTO:-0500", "TZNAME:EST", "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU",
+    "END:STANDARD", "END:VTIMEZONE", "BEGIN:VEVENT",
+    "UID:weekly-stream@l33t.dev", `DTSTAMP:${stamp}`,
+    `DTSTART;TZID=${streamSchedule.timeZone}:${start}`,
+    `RRULE:FREQ=WEEKLY;BYDAY=${dayCodes[streamSchedule.weekday]}`,
+    "SUMMARY:l33t.dev with Phil", "URL:https://l33t.dev/",
+    `DESCRIPTION:Games and development with Phil.\\n${socialLinks[0].url}\\n`,
+    ` ${socialLinks[1].url}`, "END:VEVENT", "END:VCALENDAR", "",
+  ].join("\r\n");
+}
 
-  socialLinks
-    .filter((link) => link.enabled)
-    .forEach((link) => {
-      const footerLink = document.createElement("a");
-      footerLink.href = link.url;
-      footerLink.target = "_blank";
-      footerLink.rel = "noreferrer";
-      footerLink.textContent = link.name;
-      footerLinks.append(footerLink);
+function initializePage() {
+  for (const platform of socialLinks) {
+    document.querySelectorAll(`[data-platform="${platform.id}"]`).forEach((link) => {
+      link.href = platform.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
     });
-}
+  }
 
-function getEasternNow(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: streamSchedule.timezone,
-    weekday: "long",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-  }).formatToParts(date);
-  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  const dayIndex = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(
-    values.weekday,
-  );
-
-  return {
-    dayIndex,
-    hour: Number(values.hour),
-    minute: Number(values.minute),
+  const updateText = (selector, text) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      if (element.textContent !== text) element.textContent = text;
+    });
   };
-}
-
-function getNextStreamStatus(now = getEasternNow()) {
-  const streamDay = streamSchedule.days.find((day) => day.index === now.dayIndex);
-  const minutesNow = now.hour * 60 + now.minute;
-  const streamMinutes = streamSchedule.hour * 60 + streamSchedule.minute;
-
-  if (streamDay && minutesNow < streamMinutes) {
-    return {
-      label: `Tonight at 7 PM ${streamSchedule.timezoneLabel}`,
-      state: "tonight",
-    };
-  }
-
-  const nextDay = streamSchedule.days
-    .map((day) => ({
-      ...day,
-      daysAway: (day.index - now.dayIndex + 7) % 7 || 7,
-    }))
-    .sort((a, b) => a.daysAway - b.daysAway)[0];
-
-  return {
-    label: `Next stream ${nextDay.name} at 7 PM ${streamSchedule.timezoneLabel}`,
-    state: "upcoming",
+  const updateSchedule = () => {
+    const { label, state, nextStart } = getStreamStatus();
+    updateText("[data-stream-status]", label);
+    updateText("[data-weekly-schedule]", `${streamSchedule.day}s / ${timeLabel()} ${streamSchedule.timeZoneLabel}`);
+    updateText("[data-schedule-frequency]", `Every ${streamSchedule.day}`);
+    updateText("[data-schedule-time]", timeLabel(true).split(" ")[0]);
+    updateText("[data-schedule-period]", timeLabel(true).split(" ")[1]);
+    document.querySelectorAll("[data-stream-dot]").forEach((dot) => { dot.dataset.streamState = state; });
+    const nextDate = new Intl.DateTimeFormat("en-US", {
+      timeZone: streamSchedule.timeZone, weekday: "short", month: "short", day: "numeric",
+    }).format(nextStart);
+    updateText("[data-next-session]", `Next scheduled start: ${nextDate}`);
+    const localTime = new Intl.DateTimeFormat(undefined, {
+      weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short",
+    }).format(nextStart);
+    updateText("[data-local-time]", `Your time: ${localTime}`);
   };
+
+  updateSchedule();
+  window.setInterval(() => { if (!document.hidden) updateSchedule(); }, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) updateSchedule(); });
 }
 
-function getNextStreamLabel(now = getEasternNow()) {
-  return getNextStreamStatus(now).label;
+if (typeof document !== "undefined") initializePage();
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { streamSchedule, socialLinks, getStreamStatus, calendarEvent };
 }
-
-function renderStreamSchedule() {
-  const status = getNextStreamStatus();
-  const heroStatus = document.querySelector("[data-stream-status]");
-  const scheduleLine = document.querySelector("[data-stream-schedule]");
-  const statusDot = document.querySelector("[data-stream-dot]");
-
-  if (heroStatus) {
-    heroStatus.textContent = status.label;
-  }
-
-  if (scheduleLine) {
-    scheduleLine.textContent = status.label;
-  }
-
-  if (statusDot) {
-    statusDot.dataset.streamState = status.state;
-  }
-}
-
-renderSocialLinks();
-renderStreamSchedule();
