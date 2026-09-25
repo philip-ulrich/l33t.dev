@@ -12,6 +12,7 @@ const streamSchedule = {
   minute: 0,
   timeZone: "America/New_York",
   timeZoneLabel: "ET",
+  skippedDates: ["2026-09-25"],
 };
 
 const easternFormatter = new Intl.DateTimeFormat("en-US", {
@@ -30,6 +31,23 @@ function timeLabel(includeMinutes = false) {
   const { hour, minute } = streamSchedule;
   const minutes = includeMinutes || minute ? `:${String(minute).padStart(2, "0")}` : "";
   return `${hour % 12 || 12}${minutes} ${hour >= 12 ? "PM" : "AM"}`;
+}
+
+function dateKey({ year, month, day }) {
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function isSkippedDate({ year, month, day }) {
+  return streamSchedule.skippedDates.includes(dateKey({ year, month, day }));
+}
+
+function formatStreamDate(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: streamSchedule.timeZone,
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  }).format(date);
 }
 
 function easternToDate(year, month, day) {
@@ -54,15 +72,38 @@ function getStreamStatus(now = new Date()) {
   const beforeStart = local.hour * 60 + local.minute < streamSchedule.hour * 60 + streamSchedule.minute;
   const daysUntilStart = dayOffset || (beforeStart ? 0 : 7);
   calendarDate.setUTCDate(calendarDate.getUTCDate() + daysUntilStart);
+  let skippedDate;
+  while (isSkippedDate({
+    year: calendarDate.getUTCFullYear(),
+    month: calendarDate.getUTCMonth() + 1,
+    day: calendarDate.getUTCDate(),
+  })) {
+    skippedDate = new Date(calendarDate);
+    calendarDate.setUTCDate(calendarDate.getUTCDate() + 7);
+  }
   const nextStart = easternToDate(calendarDate.getUTCFullYear(), calendarDate.getUTCMonth() + 1, calendarDate.getUTCDate());
   const time = `${timeLabel()} ${streamSchedule.timeZoneLabel}`;
 
+  if (skippedDate) {
+    return {
+      label: `No stream ${formatStreamDate(easternToDate(skippedDate.getUTCFullYear(), skippedDate.getUTCMonth() + 1, skippedDate.getUTCDate()))}. Next stream ${formatStreamDate(nextStart)} at ${time}`,
+      state: "skipped",
+      nextStart,
+    };
+  }
+
   let label = `Next stream ${streamSchedule.day} at ${time}`;
   let state = "upcoming";
-  if (dayOffset === 1) label = `Tomorrow at ${time}`;
-  if (dayOffset === 0) {
-    label = beforeStart ? `Tonight at ${time}` : `Tonight's session / scheduled for ${time}`;
-    state = beforeStart ? "tonight" : "scheduled";
+  const nextStreamIsToday = dateKey({
+    year: calendarDate.getUTCFullYear(),
+    month: calendarDate.getUTCMonth() + 1,
+    day: calendarDate.getUTCDate(),
+  }) === dateKey(local);
+  if (nextStreamIsToday) {
+    label = `Tonight at ${time}`;
+    state = "tonight";
+  } else if (dayOffset === 1) {
+    label = `Tomorrow at ${time}`;
   }
   return { label, state, nextStart };
 }
@@ -73,6 +114,10 @@ function calendarEvent(now = new Date()) {
   const start = `${next.year}${pad(next.month)}${pad(next.day)}T${pad(next.hour)}${pad(next.minute)}00`;
   const stamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const dayCodes = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  const exclusions = streamSchedule.skippedDates.map((skippedDate) => {
+    const [year, month, day] = skippedDate.split("-").map(Number);
+    return `EXDATE;TZID=${streamSchedule.timeZone}:${year}${pad(month)}${pad(day)}T${pad(streamSchedule.hour)}${pad(streamSchedule.minute)}00`;
+  });
   return [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//l33t.dev//Friday stream//EN",
     "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VTIMEZONE",
@@ -85,6 +130,7 @@ function calendarEvent(now = new Date()) {
     "UID:weekly-stream@l33t.dev", `DTSTAMP:${stamp}`,
     `DTSTART;TZID=${streamSchedule.timeZone}:${start}`,
     `RRULE:FREQ=WEEKLY;BYDAY=${dayCodes[streamSchedule.weekday]}`,
+    ...exclusions,
     "SUMMARY:l33t.dev with Phil", "URL:https://l33t.dev/",
     `DESCRIPTION:Games and development with Phil.\\n${socialLinks[0].url}\\n`,
     ` ${socialLinks[1].url}`, "END:VEVENT", "END:VCALENDAR", "",
@@ -116,7 +162,8 @@ function initializePage() {
     const nextDate = new Intl.DateTimeFormat("en-US", {
       timeZone: streamSchedule.timeZone, weekday: "short", month: "short", day: "numeric",
     }).format(nextStart);
-    updateText("[data-next-session]", `Next scheduled start: ${nextDate}`);
+    const skipNotice = state === "skipped" ? "No stream this Friday. " : "";
+    updateText("[data-next-session]", `${skipNotice}Next scheduled start: ${nextDate}`);
     const localTime = new Intl.DateTimeFormat(undefined, {
       weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short",
     }).format(nextStart);

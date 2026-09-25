@@ -6,9 +6,10 @@ Phil's games and development stream. Plain HTML, CSS, and JavaScript, hosted on 
 
 - Update channel URLs in `socialLinks` in `app.js`. HTML links also contain working URLs for visitors without JavaScript; keep those fallbacks in sync when changing channels.
 - Streams are Fridays at 7 PM Eastern. `streamSchedule` in `app.js` drives the status badge, next date, and visitor-local time. Also update the static Friday copy and metadata in `index.html` when changing the schedule.
+- Add one-off cancellations to `streamSchedule.skippedDates` using an Eastern date in `YYYY-MM-DD` format. The status and calendar event will skip that session automatically.
 - Eastern time uses `America/New_York`, so 7 PM stays 7 PM through daylight saving changes. The badge refreshes every 30 seconds and when a hidden tab becomes visible.
 - The badge describes the schedule, not verified live status. Friday evening says the session was scheduled for 7 PM; it does not claim the channel is live.
-- The calendar link serves `assets/friday-stream.ics`, a recurring Friday event that also works without JavaScript. After a schedule change, regenerate it with `node -e 'require("node:fs").writeFileSync("assets/friday-stream.ics", require("./app.js").calendarEvent())'`.
+- The calendar link serves `assets/friday-stream.ics`, a recurring Friday event that also works without JavaScript. After a schedule change, regenerate it with `node -e 'require("node:fs").writeFileSync("assets/friday-stream.ics", require("./app.js").calendarEvent().replace(/\\r\\n/g, "\\n"))'`.
 
 ## Preview and Checks
 

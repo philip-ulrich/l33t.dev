@@ -72,6 +72,7 @@ h1 span { color: var(--lime); }
 .status-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--cyan); }
 .status-dot[data-stream-state="tonight"] { background: var(--lime); }
 .status-dot[data-stream-state="scheduled"] { background: #efd193; }
+.status-dot[data-stream-state="skipped"] { background: #f0a76a; }
 .text-link { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-size: 12px; font-weight: 600; transition: color 150ms ease; }
 .text-link .icon { width: 16px; height: 16px; flex-basis: 16px; }
 
