@@ -17,6 +17,8 @@ Open `index.html` directly, or run `python3 -m http.server 4173 --bind 127.0.0.1
 
 Run `node --check app.js` and `node --test tests/schedule.test.cjs`. There is no build or dependency installation step.
 
+When changing a cached frontend asset, update its `?v=` revision in `index.html` so GitHub Pages visitors receive the matching CSS and JavaScript immediately.
+
 ## Assets
 
 The original generated console illustration remains in `assets/l33t-systems-console.png`. The page uses the smaller `assets/control-room.webp`; the PNG is retained for social previews. Barlow Condensed and Manrope load through Google Fonts with system fallbacks. There are no analytics, API keys, embeds, or backend services.
